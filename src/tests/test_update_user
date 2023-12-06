@@ -1,0 +1,14 @@
+def test_update_user(test_app, test_database, add_user):
+    user = add_user('john', 'john@algonquincollege.com')
+    client = test_app.test_client()
+    resp = client.put(
+        f'/users/{user.id}',
+        data=json.dumps({
+            'username': 'john_updated',
+            'email': 'john_updated@algonquincollege.com'
+        }),
+        content_type='application/json',
+    )
+    data = json.loads(resp.data.decode())
+    assert resp.status_code == 200
+    assert 'User was updated' in data['message']

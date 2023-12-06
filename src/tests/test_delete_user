@@ -1,0 +1,7 @@
+def test_delete_user(test_app, test_database, add_user):
+    user = add_user('john', 'john@algonquincollege.com')
+    client = test_app.test_client()
+    resp = client.delete(f'/users/{user.id}')
+    data = json.loads(resp.data.decode())
+    assert resp.status_code == 200
+    assert 'User was deleted' in data['message']

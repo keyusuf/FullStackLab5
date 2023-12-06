@@ -1,0 +1,27 @@
+import json
+from src.api.models import User  # Corrected import statement
+
+def test_all_users(test_app, test_database, add_user):
+    # Clear the table
+    test_database.session.query(User).delete()
+
+    # Add test users
+    add_user('john', 'john@algonquincollege.com')
+    add_user('fletcher', 'fletcher@notreal.com')
+
+    # Fetch all users
+    client = test_app.test_client()
+    resp = client.get('/users')
+    data = json.loads(resp.data.decode())
+
+    # Extract usernames and emails for verification
+    usernames = [user['username'] for user in data]
+    emails = [user['email'] for user in data]
+
+    # Assert conditions
+    assert resp.status_code == 200
+    assert 'john' in usernames
+    assert 'john@algonquincollege.com' in emails
+    assert 'fletcher' in usernames
+    assert 'fletcher@notreal.com' in emails
+

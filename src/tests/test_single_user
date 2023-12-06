@@ -1,0 +1,13 @@
+import json
+
+def test_single_user(test_app, test_database, add_user):
+    # Using the add_user fixture to create and add a user
+    user = add_user('jeffrey', 'jeffrey@testdriven.io')
+
+    client = test_app.test_client()
+    resp = client.get(f'/users/{user.id}')
+    data = json.loads(resp.data.decode())
+
+    assert resp.status_code == 200
+    assert data['username'] == 'jeffrey'
+    assert data['email'] == 'jeffrey@testdriven.io'
